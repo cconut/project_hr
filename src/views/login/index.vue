@@ -92,6 +92,7 @@ export default {
           // vuex中的action返回的是一个promise，所以要异步
           await this.$store.dispatch("user/login", this.loginForm);
           this.$router.push("/");
+          console.log(this.$store);
         }
       });
     },
