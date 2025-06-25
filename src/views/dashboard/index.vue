@@ -128,6 +128,7 @@
             </div>
             <div class="chart">
               <!-- 图表 -->
+              <div ref="social" style="width: 100%; height: 100%"></div>
             </div>
           </div>
         </div>
@@ -157,6 +158,7 @@
             </div>
             <div class="chart">
               <!-- 图表 -->
+              <div ref="provident" style="width: 100%; height: 100%"></div>
             </div>
           </div>
         </div>
@@ -223,6 +225,11 @@
 import CountTo from "vue-count-to";
 import { mapGetters } from "vuex";
 import { getHomeData, getMessageList } from "@/api/home";
+import * as echarts from "echarts/core";
+import { LineChart } from "echarts/charts";
+import { GridComponent } from "echarts/components";
+import { CanvasRenderer } from "echarts/renderers";
+echarts.use([LineChart, GridComponent, CanvasRenderer]);
 export default {
   components: {
     CountTo,
@@ -247,6 +254,63 @@ export default {
     async getMessageList() {
       this.list = await getMessageList();
     },
+  },
+  watch: {
+    homeData() {
+      this.social.setOption({
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: this.homeData.socialInsurance?.xAxis,
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [
+          {
+            data: this.homeData.socialInsurance?.yAxis,
+            type: "line",
+            //填充颜色
+            areaStyle: {
+              color: "#04c9be",
+            },
+            //线的颜色
+            lineStyle: {
+              color: "#04c9be",
+            },
+          },
+        ],
+      });
+      this.provident.setOption({
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: this.homeData.providentFund?.xAxis,
+        },
+        yAxis: {
+          type: "value",
+        },
+        series: [
+          {
+            data: this.homeData.providentFund?.yAxis,
+            type: "line",
+            //填充颜色
+            areaStyle: {
+              color: "#04c9be",
+            },
+            //线的颜色
+            lineStyle: {
+              color: "#04c9be",
+            },
+          },
+        ],
+      });
+    },
+  },
+  mounted() {
+    //初始化echarts
+    this.social = echarts.init(this.$refs.social);
+    this.provident = echarts.init(this.$refs.provident);
   },
 };
 </script>
